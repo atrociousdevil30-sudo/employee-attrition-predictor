@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Employee Attrition Risk Predictor</title>
+    <base href="/">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: linear-gradient(rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.85)), 
+                        url('/static/images/bg.jpg') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .app-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="background-animation"></div>
+        
+        <div class="container">
+            <header class="app-header">
+                <div class="header-content">
+                    <h1><i class="fas fa-chart-line"></i> Employee Attrition Predictor</h1>
+                    <p class="subtitle">Assess employee attrition risk with AI-powered analytics</p>
+                </div>
+            </header>
+
+            <main class="main-content">
+                <div class="card info-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-info-circle"></i> Understanding Employee Attrition</h2>
+                    </div>
+                    <div class="card-content">
+                        <p>Attrition refers to the gradual reduction in workforce as employees leave the company and are not replaced. It's important to monitor and understand attrition risks to maintain a stable and productive work environment.</p>
+                        <p>This tool helps you analyze employee data to predict attrition risks and provides actionable insights to improve employee retention.</p>
+                    </div>
+                </div>
+
+                <div class="card" id="datasetCard">
+                    <div class="card-header">
+                        <h2><i class="fas fa-file-upload"></i> Upload IBM Attrition Dataset</h2>
+                    </div>
+                    <form id="datasetForm" class="attrition-form" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="datasetFile" class="form-label">
+                                <i class="fas fa-database"></i> Dataset CSV
+                                <span class="required">*</span>
+                            </label>
+                            <input type="file" id="datasetFile" name="datasetFile" class="form-control" accept=".csv" required>
+                            <small class="helper-text">Use the IBM HR Analytics Employee Attrition & Performance CSV (emp_attrition.csv).</small>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary" id="uploadDatasetBtn">
+                                <i class="fas fa-cloud-upload-alt"></i> Upload Dataset
+                            </button>
+                        </div>
+                        <p id="datasetStatus" class="helper-text"></p>
+
+                        <div class="form-group" id="employeeSelectGroup" style="margin-top: 1rem; display: none;">
+                            <label for="employeeSelect" class="form-label">
+                                <i class="fas fa-user"></i> Select Employee from Dataset
+                            </label>
+                            <select id="employeeSelect" class="form-control">
+                                <option value="">-- Choose an employee --</option>
+                            </select>
+                            <small class="helper-text">Employees are loaded from the uploaded IBM attrition dataset (by EmployeeNumber, JobRole, Age).</small>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card form-card">
+                    <div class="card-header">
+                        <h2><i class="fas fa-user-edit"></i> Employee Details</h2>
+                    </div>
+                    
+                    <form id="attritionForm" class="attrition-form">
+                        <div class="form-grid">
+                            <!-- Personal Info -->
+                            <div class="form-section">
+                                <h3 class="section-title">Personal Information</h3>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="age" class="form-label">
+                                            <i class="fas fa-birthday-cake"></i> Age (IBM: 18–60)
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="number" id="age" name="age" min="18" max="70" required
+                                                class="form-control" placeholder="Enter age">
+                                            <span class="input-suffix">years</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label">
+                                            <i class="fas fa-venus-mars"></i> Gender
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="radio-group">
+                                            <label class="radio-option">
+                                                <input type="radio" name="gender" value="male" checked>
+                                                <span class="radio-custom"></span>
+                                                <span class="radio-label">Male</span>
+                                            </label>
+                                            <label class="radio-option">
+                                                <input type="radio" name="gender" value="female">
+                                                <span class="radio-custom"></span>
+                                                <span class="radio-label">Female</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Job Details -->
+                            <div class="form-section">
+                                <h3 class="section-title">Job Information</h3>
+                                
+                                <div class="form-group">
+                                    <label for="jobRole" class="form-label">
+                                        <i class="fas fa-briefcase"></i> Job Role
+                                        <span class="required">*</span>
+                                    </label>
+                                    <div class="select-wrapper">
+                                        <select id="jobRole" name="jobRole" required class="form-control">
+                                            <option value="">Select a job role</option>
+                                            <!-- Will be populated by JavaScript -->
+                                        </select>
+                                        <i class="fas fa-chevron-down select-arrow"></i>
+                                    </div>
+                                </div>
+
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="monthlyIncome" class="form-label">
+                                            <i class="fas fa-money-bill-wave"></i> Monthly Income (IBM column: MonthlyIncome)
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="input-group">
+                                            <span class="input-prefix">$</span>
+                                            <input type="number" id="monthlyIncome" name="monthlyIncome" 
+                                                   min="0" step="1" required 
+                                                   placeholder="e.g., 5000" class="form-control">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="yearsAtCompany" class="form-label">
+                                            <i class="far fa-calendar-alt"></i> Years at Company (IBM column: YearsAtCompany)
+                                            <span class="required">*</span>
+                                        </label>
+                                        <div class="input-group">
+                                            <input type="number" id="yearsAtCompany" name="yearsAtCompany" 
+                                                   min="0" max="50" step="0.5" required 
+                                                   placeholder="e.g., 3.5" class="form-control">
+                                            <span class="input-suffix">years</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="checkbox-group">
+                                        <input type="checkbox" id="overTime" name="overTime" class="custom-checkbox">
+                                        <label for="overTime" class="checkbox-label">
+                                            <span class="checkmark"></span>
+                                            <i class="fas fa-clock"></i> Works Overtime
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" id="submitBtn" class="btn btn-primary">
+                                <i class="fas fa-calculator"></i> Calculate Risk
+                            </button>
+                            <button type="reset" id="resetBtn" class="btn btn-secondary">
+                                <i class="fas fa-redo"></i> Reset
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="card result-card" id="resultCard">
+                    <div class="card-header">
+                        <h2><i class="fas fa-chart-pie"></i> Attrition Risk Summary</h2>
+                    </div>
+                    <div class="result-container">
+                        <div class="risk-score-container">
+                            <div class="risk-score" id="riskScore">0.0</div>
+                            <div class="risk-level" id="riskLevel">-</div>
+                        </div>
+                        <div class="risk-description" id="riskDescription">
+                            Submit the form to see the risk assessment.
+                        </div>
+                        <div class="risk-drivers" id="riskDrivers"></div>
+                    </div>
+                </div>
+            </main>
+
+            <div class="loading-overlay" id="loadingOverlay">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p class="loading-text">Analyzing employee data...</p>
+                </div>
+            </div>
+
+            <footer class="app-footer">
+                <div class="footer-content">
+                    <p>Employee Attrition Risk Predictor <span class="version">v1.0.0</span></p>
+                    <p class="copyright"> 2025 All Rights Reserved</p>
+                </div>
+            </footer>
+        </div>
+    </div>
+    
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
