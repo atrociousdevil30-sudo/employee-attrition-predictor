@@ -6,11 +6,11 @@ A machine learning web application that predicts employee attrition risk and pro
 
 ## Features
 
-- 🎯 **Predictive Analytics**: Forecast employee attrition risk using machine learning
-- 📊 **Interactive Dashboard**: Visualize key HR metrics and trends
-- 📈 **Risk Classification**: Categorize employees into low, medium, and high-risk groups
-- 🔍 **Insightful Analysis**: Identify key factors contributing to attrition
-- 🎨 **Modern UI**: Clean, responsive design with an intuitive interface
+- **Predictive Analytics**: Forecast employee attrition risk using machine learning
+- **Interactive Dashboard**: Visualize key HR metrics and trends
+- **Risk Classification**: Categorize employees into low, medium, and high-risk groups
+- **Insightful Analysis**: Identify key factors contributing to attrition
+- **Modern UI**: Clean, responsive design with an intuitive interface
 
 ## Tech Stack
 
@@ -30,7 +30,7 @@ A machine learning web application that predicts employee attrition risk and pro
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/employee-attrition-predictor.git
+   git clone https://github.com/atrociousdevil30-sudo/employee-attrition-predictor.git
    cd employee-attrition-predictor
    ```
 
